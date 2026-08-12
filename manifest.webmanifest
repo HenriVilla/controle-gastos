@@ -1,0 +1,15 @@
+{
+  "name": "Controle de gastos",
+  "short_name": "Gastos",
+  "description": "Le faturas e boletos e mostra para onde o dinheiro esta indo. Tudo no proprio aparelho.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f8",
+  "theme_color": "#1f3864",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icone.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

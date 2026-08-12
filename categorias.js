@@ -1,0 +1,571 @@
+/* Classificador por setor — porte fiel do categorias.py.
+   Gerado a partir do dicionário Python para as duas versões nunca divergirem. */
+
+var SETORES = [
+ {
+  "setor": "Moradia",
+  "cor": "#1f3864",
+  "chaves": [
+   "aluguel",
+   "condominio",
+   "condomínio",
+   "iptu",
+   "imobiliaria",
+   "cemig",
+   "cpfl",
+   "energia",
+   "eletric",
+   "light",
+   "enel",
+   "copasa",
+   "sabesp",
+   "saneamento",
+   "agua",
+   "gas ",
+   "ultragaz",
+   "comgas",
+   "supergasbras",
+   "internet",
+   "vivo fibra",
+   "claro",
+   "oi fibra",
+   "net ",
+   "tim ",
+   "algar",
+   "seguro residencial",
+   "reforma",
+   "material de constru",
+   "leroy",
+   "telhanorte",
+   "obramax",
+   "casa show",
+   "c&c ",
+   "tumelero",
+   "seguro lar",
+   "conta de telefone",
+   "conta de internet",
+   "conta de energia",
+   "conta de agua",
+   "conta de água",
+   "conta de gas",
+   "conta de gás",
+   "conta de servico",
+   "telefonica brasil",
+   "niointernet"
+  ]
+ },
+ {
+  "setor": "Mercado",
+  "cor": "#2e7d32",
+  "chaves": [
+   "supermerc",
+   "mercado",
+   "atacad",
+   "assai",
+   "assaí",
+   "carrefour",
+   "extra ",
+   "pao de acucar",
+   "big ",
+   "bh ",
+   "epa ",
+   "verdemar",
+   "sonda",
+   "tenda atac",
+   "makro",
+   "sam s club",
+   "sams club",
+   "hortifruti",
+   "sacolao",
+   "acougue",
+   "padaria",
+   "quitanda",
+   "emporio",
+   "mercearia",
+   "dia supermerc",
+   "novo mundo",
+   "coop ",
+   "coopera",
+   "bretas",
+   "mart minas",
+   "villefort"
+  ]
+ },
+ {
+  "setor": "Transporte",
+  "cor": "#b8860b",
+  "chaves": [
+   "posto",
+   "combustiv",
+   "gasolina",
+   "etanol",
+   "shell",
+   "ipiranga",
+   "petrobras dist",
+   "br mania",
+   "ale comb",
+   "uber",
+   "99app",
+   "99 tecnologia",
+   "cabify",
+   "taxi",
+   "estacionament",
+   "zona azul",
+   "pedagio",
+   "sem parar",
+   "conectcar",
+   "veloe",
+   "ipva",
+   "detran",
+   "licenciamento",
+   "seguro auto",
+   "porto seguro",
+   "oficina",
+   "auto center",
+   "pneu",
+   "mecanic",
+   "lavagem",
+   "lava jato",
+   "onibus",
+   "rodoviaria",
+   "localiza",
+   "movida",
+   "unidas",
+   "nutag",
+   "dpaschoal",
+   "99app",
+   "99 *"
+  ]
+ },
+ {
+  "setor": "Alimentação fora",
+  "cor": "#c0392b",
+  "chaves": [
+   "restaurante",
+   "lanchonete",
+   "pizzaria",
+   "hamburgu",
+   "burger",
+   "mc donald",
+   "mcdonald",
+   "bk ",
+   "burger king",
+   "subway",
+   "habib",
+   "bobs",
+   "outback",
+   "madero",
+   "coco bambu",
+   "ifood",
+   "rappi",
+   "uber eats",
+   "delivery",
+   "cafe",
+   "cafeteria",
+   "starbucks",
+   "bar ",
+   "boteco",
+   "choperia",
+   "sorveteria",
+   "acai",
+   "doceria",
+   "confeitaria",
+   "churrascaria",
+   "self service",
+   "marmita",
+   "espeto",
+   "sushi",
+   "pizza",
+   "eskimo",
+   "99food",
+   "bauducco",
+   "parrilla",
+   "glazed",
+   "padaria",
+   "cafeteria"
+  ]
+ },
+ {
+  "setor": "Saúde",
+  "cor": "#0a7d4b",
+  "chaves": [
+   "farmac",
+   "drogaria",
+   "droga raia",
+   "drogasil",
+   "pague menos",
+   "panvel",
+   "nissei",
+   "unimed",
+   "amil",
+   "bradesco saude",
+   "sulamerica saude",
+   "hapvida",
+   "notredame",
+   "plano de saude",
+   "hospital",
+   "clinica",
+   "laboratorio",
+   "exame",
+   "consulta",
+   "dentista",
+   "odonto",
+   "psicolog",
+   "terapia",
+   "fisioterap",
+   "oftalmo",
+   "otica",
+   "academia",
+   "smart fit",
+   "bio ritmo",
+   "crossfit",
+   "personal",
+   "pilates",
+   "nutricion",
+   "lab med",
+   "suplement",
+   "laboratorio"
+  ]
+ },
+ {
+  "setor": "Educação",
+  "cor": "#6a1b9a",
+  "chaves": [
+   "faculdade",
+   "universidade",
+   "colegio",
+   "escola",
+   "curso",
+   "udemy",
+   "alura",
+   "coursera",
+   "hotmart",
+   "kiwify",
+   "mensalidade",
+   "matricula",
+   "material escolar",
+   "livraria",
+   "amazon livr",
+   "crea",
+   "anuidade crea",
+   "art ",
+   "conselho regional",
+   "pos graduacao",
+   "mba",
+   "ingles",
+   "wizard",
+   "cultura inglesa",
+   "cna ",
+   "fisk",
+   "finclass",
+   "faculdade de tecnolog"
+  ]
+ },
+ {
+  "setor": "Assinaturas",
+  "cor": "#00838f",
+  "chaves": [
+   "netflix",
+   "spotify",
+   "amazon prime",
+   "prime video",
+   "disney",
+   "hbo",
+   "max ",
+   "globoplay",
+   "paramount",
+   "apple.com",
+   "apple servi",
+   "icloud",
+   "google one",
+   "youtube premium",
+   "deezer",
+   "canva",
+   "adobe",
+   "microsoft",
+   "office 365",
+   "chatgpt",
+   "openai",
+   "anthropic",
+   "claude",
+   "dropbox",
+   "notion",
+   "kindle",
+   "assinatura",
+   "mensal digital",
+   "youtubepremium",
+   "parallels",
+   "apple.com/bill"
+  ]
+ },
+ {
+  "setor": "Vestuário",
+  "cor": "#ad1457",
+  "chaves": [
+   "renner",
+   "riachuelo",
+   "c&a",
+   "zara",
+   "hering",
+   "marisa",
+   "pernambucanas",
+   "centauro",
+   "netshoes",
+   "nike",
+   "adidas",
+   "havaianas",
+   "calcado",
+   "sapataria",
+   "loja de roupa",
+   "boutique",
+   "shein",
+   "outlet"
+  ]
+ },
+ {
+  "setor": "Lazer",
+  "cor": "#ef6c00",
+  "chaves": [
+   "cinema",
+   "cinemark",
+   "uci ",
+   "teatro",
+   "show",
+   "ingresso",
+   "eventim",
+   "sympla",
+   "parque",
+   "clube",
+   "steam",
+   "playstation",
+   "xbox",
+   "nintendo",
+   "game",
+   "loteria",
+   "ticketmaster",
+   "playstatn",
+   "boliche",
+   "kart"
+  ]
+ },
+ {
+  "setor": "Viagem",
+  "cor": "#689f38",
+  "chaves": [
+   "viagem",
+   "hotel",
+   "pousada",
+   "airbnb",
+   "booking.com",
+   "hostel",
+   "resort",
+   "hospedagem",
+   "mercure",
+   "ibis ",
+   "novotel",
+   "hilton",
+   "marriott",
+   "accor",
+   "decolar",
+   "cvc viagens",
+   "123 milhas",
+   "maxmilhas",
+   "agencia de viagem",
+   "passagem aerea",
+   "latam",
+   "gol linhas",
+   "azul linhas",
+   "smiles",
+   "livelo viagem"
+  ]
+ },
+ {
+  "setor": "Colecionáveis",
+  "cor": "#ec407a",
+  "chaves": [
+   "funko",
+   "iron studios",
+   "ironstudios",
+   "sideshow",
+   "hot toys",
+   "hottoys",
+   "bandai",
+   "tamashii",
+   "banpresto",
+   "nendoroid",
+   "good smile",
+   "kotobukiya",
+   "mcfarlane",
+   "colecion",
+   "action figure",
+   "actionfigure",
+   "estatua",
+   "geek",
+   "otaku",
+   "quadrinhos",
+   "card game",
+   "magic the gathering",
+   "pokemon",
+   "tcg ",
+   "miniatura",
+   "toy art",
+   "toyart"
+  ]
+ },
+ {
+  "setor": "Eletrônicos",
+  "cor": "#26a69a",
+  "chaves": [
+   "kabum",
+   "pichau",
+   "terabyte",
+   "fast shop",
+   "fastshop",
+   "magazine luiza",
+   "magalu",
+   "casas bahia",
+   "ponto frio",
+   "apple store",
+   "samsung",
+   "xiaomi",
+   "motorola",
+   "dell ",
+   "lenovo",
+   "acer ",
+   "asus",
+   "logitech",
+   "jbl ",
+   "kingston",
+   "seagate",
+   "western digital",
+   "informatica",
+   "eletronico",
+   "notebook",
+   "monitor",
+   "teclado",
+   "headset",
+   "ssd ",
+   "hd externo",
+   "smartphone",
+   "carregador"
+  ]
+ },
+ {
+  "setor": "Presentes",
+  "cor": "#7e57c2",
+  "chaves": [
+   "presente",
+   "gift",
+   "floricultura",
+   "flores",
+   "buque",
+   "joalheria",
+   "ourivesaria",
+   "vivara",
+   "pandora joia",
+   "cacau show",
+   "kopenhagen",
+   "brasil cacau",
+   "lembrancinha"
+  ]
+ },
+ {
+  "setor": "Pets",
+  "cor": "#5d4037",
+  "chaves": [
+   "petshop",
+   "pet shop",
+   "cobasi",
+   "petz",
+   "veterinar",
+   "racao",
+   "banho e tosa"
+  ]
+ },
+ {
+  "setor": "Serviços e taxas",
+  "cor": "#455a64",
+  "chaves": [
+   "tarifa",
+   "anuidade",
+   "cartorio",
+   "correios",
+   "sedex",
+   "seguro de vida",
+   "advogad",
+   "contador",
+   "contabil",
+   "das ",
+   "simples nacional",
+   "darf",
+   "inss",
+   "juros",
+   "multa",
+   "encargo",
+   "manutencao de conta",
+   "pacote de servicos"
+  ]
+ },
+ {
+  "setor": "Investimento",
+  "cor": "#1565c0",
+  "chaves": [
+   "aplicacao",
+   "investimento",
+   "tesouro direto",
+   "corretora",
+   "clear",
+   "rico invest",
+   "xp invest",
+   "btg",
+   "nuinvest",
+   "aporte",
+   "cdb",
+   "previdencia"
+  ]
+ }
+];
+
+var NAO_DESPESA = ["pagamento recebido", "pagamento de fatura", "estorno", "reembolso", "cashback", "credito rotativo", "transferencia recebida", "pix recebido", "salario", "rendimento", "resgate", "devolucao"];
+
+var CORES = {};
+SETORES.forEach(function(s){ CORES[s.setor] = s.cor; });
+CORES['A classificar'] = '#8b95a3';
+var NOMES = SETORES.map(function(s){ return s.setor; }).concat(['A classificar']);
+
+function norm(s){
+  return String(s == null ? '' : s)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+/* Quando mais de uma chave casa, vence a mais longa — é a mais específica.
+   Sem isso "99food" cairia em Transporte por causa da chave "99". */
+function classificar(desc, regras){
+  var d = norm(desc);
+  if (!d) return { setor: 'A classificar', confianca: 'nenhuma' };
+
+  var melhor = null;
+  (regras || []).forEach(function(r){
+    var ch = norm(r.chave);
+    if (ch && d.indexOf(ch) >= 0 && (!melhor || ch.length > melhor[0].length))
+      melhor = [ch, r.setor || 'A classificar'];
+  });
+  if (melhor) return { setor: melhor[1], confianca: 'alta' };
+
+  for (var i = 0; i < NAO_DESPESA.length; i++)
+    if (d.indexOf(NAO_DESPESA[i]) >= 0)
+      return { setor: 'Não é despesa', confianca: 'media' };
+
+  melhor = null;
+  SETORES.forEach(function(s){
+    s.chaves.forEach(function(c){
+      if (d.indexOf(c) >= 0 && (!melhor || c.length > melhor[0].length)) melhor = [c, s.setor];
+    });
+  });
+  if (melhor) return { setor: melhor[1], confianca: 'media' };
+
+  return { setor: 'A classificar', confianca: 'nenhuma' };
+}
+
+function corDoSetor(s){ return CORES[s] || '#8b95a3'; }

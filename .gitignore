@@ -1,0 +1,11 @@
+# Nada de dado pessoal pode subir. Este arquivo é a segunda trava,
+# depois da varredura do PUBLICAR.command.
+
+dados.json
+controle-gastos-*.json
+backup*.json
+*.pdf
+*.xlsx
+*.csv
+faturas/
+.DS_Store
