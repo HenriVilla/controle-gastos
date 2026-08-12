@@ -90,60 +90,78 @@ else
   echo "  alteracoes registradas"
 fi
 
-REMOTO=$(git remote get-url origin 2>/dev/null)
+# --- 5. remoto e envio, sem voce colar nada ---
+DESTINO="https://github.com/$USUARIO/$REPO.git"
+ATUAL=$(git remote get-url origin 2>/dev/null)
+
+if [ -z "$ATUAL" ]; then
+  git remote add origin "$DESTINO"
+  echo "  destino configurado: $USUARIO/$REPO"
+elif [ "$ATUAL" != "$DESTINO" ]; then
+  echo "  destino estava em: $ATUAL"
+  git remote set-url origin "$DESTINO"
+  echo "  corrigido para:    $USUARIO/$REPO"
+else
+  echo "  destino: $USUARIO/$REPO"
+fi
+
+# garante que existe o ramo main com pelo menos um commit
+git branch -M main 2>/dev/null
+if ! git rev-parse --verify main >/dev/null 2>&1; then
+  echo ""
+  echo "  ERRO: nenhum commit foi criado. Rode este script de novo."
+  pausa 1
+fi
 
 echo ""
 echo "  ============================================"
-if [ -z "$REMOTO" ]; then
-  echo "   FALTA SO O GITHUB — 3 passos"
+echo "   ENVIANDO PARA O GITHUB"
+echo "  ============================================"
+echo ""
+echo "  Se pedir credenciais:"
+echo "     Username: $USUARIO"
+echo "     Password: o TOKEN (nao a senha da conta)"
+echo "               https://github.com/settings/tokens"
+echo "               Generate new token (classic) -> marque 'repo'"
+echo ""
+
+if git push -u origin main; then
+  echo ""
+  echo "  ============================================"
+  echo "   PRONTO"
   echo "  ============================================"
   echo ""
-  echo "  1. Crie a conta e o repositorio"
-  echo "     Abra  https://github.com/new"
-  echo "     Nome:      $REPO"
-  echo "     Visibilidade: Public"
-  echo "     NAO marque nenhuma opcao de 'Add a README'"
-  echo ""
-  echo "  2. Volte aqui e cole estes dois comandos no Terminal:"
-  echo ""
-  echo "     cd \"$P\""
-  echo "     git remote add origin https://github.com/$USUARIO/$REPO.git && git push -u origin main"
-  echo ""
-  echo "     Usuario: $USUARIO"
-  echo "     Senha:   NAO e a senha da conta —"
-  echo "              e um TOKEN. Gere em https://github.com/settings/tokens"
-  echo "     -> Generate new token (classic) -> marque 'repo' -> copie."
-  echo ""
-  echo "  3. Ligue o GitHub Pages"
-  echo "     No repositorio: Settings -> Pages"
+  echo "  Agora ligue o GitHub Pages, uma vez so:"
+  echo "     https://github.com/$USUARIO/$REPO/settings/pages"
   echo "     Source: Deploy from a branch"
-  echo "     Branch: main   Pasta: / (root)   -> Save"
+  echo "     Branch: main    Pasta: / (root)    -> Save"
   echo ""
-  echo "     Em ate 2 minutos o endereco fica de pe:"
+  echo "  Em ate 2 minutos o app fica de pe em:"
+  echo ""
   echo "     https://$USUARIO.github.io/$REPO/"
   echo ""
-  echo "  4. No IPHONE, abra esse endereco no SAFARI"
-  echo "     Compartilhar -> Adicionar a Tela de Inicio"
+  echo "  No IPHONE: abra esse endereco no SAFARI,"
+  echo "  toque em Compartilhar -> Adicionar a Tela de Inicio."
+  echo ""
+  echo "  Da proxima vez, so clicar neste arquivo de novo."
 else
-  echo "   ENVIANDO PARA O GITHUB"
+  echo ""
+  echo "  ============================================"
+  echo "   O ENVIO FALHOU"
   echo "  ============================================"
   echo ""
-  echo "  destino: $REMOTO"
-  case "$REMOTO" in
-    *"$USUARIO/$REPO"*) : ;;
-    *) echo "  AVISO: o destino nao e github.com/$USUARIO/$REPO." ;;
-  esac
+  echo "  As duas causas comuns:"
   echo ""
-  if git push -u origin main; then
-    echo ""
-    echo "  Enviado. O GitHub Pages atualiza em ate 2 minutos."
-    U=$(echo "$REMOTO" | sed -E 's#.*github.com[:/]([^/]+)/([^/.]+)(\.git)?#https://\1.github.io/\2/#')
-    echo "  Endereco: $U"
-  else
-    echo ""
-    echo "  O envio falhou. Se pediu senha: use um TOKEN, nao a senha da conta."
-    echo "  Gere em https://github.com/settings/tokens (classic, marque 'repo')."
-  fi
+  echo "  1) O repositorio ainda nao existe no GitHub."
+  echo "     Crie em: https://github.com/new"
+  echo "     Nome: $REPO   Visibilidade: Public"
+  echo "     NAO marque 'Add a README' nem nenhuma outra opcao."
+  echo ""
+  echo "  2) Autenticacao. O GitHub nao aceita mais a senha da conta."
+  echo "     Use um TOKEN em https://github.com/settings/tokens"
+  echo "     (Generate new token classic, marque 'repo')"
+  echo ""
+  echo "  Resolva e clique neste arquivo de novo."
 fi
 echo "  ============================================"
 pausa
