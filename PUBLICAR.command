@@ -7,6 +7,8 @@
 
 cd "$(dirname "$0")" || exit 1
 P="$(pwd)"
+USUARIO="HenriVilla"
+REPO="controle-gastos"
 clear
 echo ""
 echo "  ============================================"
@@ -98,18 +100,18 @@ if [ -z "$REMOTO" ]; then
   echo ""
   echo "  1. Crie a conta e o repositorio"
   echo "     Abra  https://github.com/new"
-  echo "     Nome:      controle-gastos"
+  echo "     Nome:      $REPO"
   echo "     Visibilidade: Public"
   echo "     NAO marque nenhuma opcao de 'Add a README'"
   echo ""
-  echo "  2. Volte aqui e rode, trocando SEU-USUARIO:"
+  echo "  2. Volte aqui e cole estes dois comandos no Terminal:"
   echo ""
   echo "     cd \"$P\""
-  echo "     git remote add origin https://github.com/SEU-USUARIO/controle-gastos.git"
-  echo "     git push -u origin main"
+  echo "     git remote add origin https://github.com/$USUARIO/$REPO.git && git push -u origin main"
   echo ""
-  echo "     Ele vai pedir usuario e senha. A senha NAO e a da conta:"
-  echo "     e um token. Gere em  https://github.com/settings/tokens"
+  echo "     Usuario: $USUARIO"
+  echo "     Senha:   NAO e a senha da conta —"
+  echo "              e um TOKEN. Gere em https://github.com/settings/tokens"
   echo "     -> Generate new token (classic) -> marque 'repo' -> copie."
   echo ""
   echo "  3. Ligue o GitHub Pages"
@@ -118,7 +120,7 @@ if [ -z "$REMOTO" ]; then
   echo "     Branch: main   Pasta: / (root)   -> Save"
   echo ""
   echo "     Em ate 2 minutos o endereco fica de pe:"
-  echo "     https://SEU-USUARIO.github.io/controle-gastos/"
+  echo "     https://$USUARIO.github.io/$REPO/"
   echo ""
   echo "  4. No IPHONE, abra esse endereco no SAFARI"
   echo "     Compartilhar -> Adicionar a Tela de Inicio"
@@ -127,6 +129,10 @@ else
   echo "  ============================================"
   echo ""
   echo "  destino: $REMOTO"
+  case "$REMOTO" in
+    *"$USUARIO/$REPO"*) : ;;
+    *) echo "  AVISO: o destino nao e github.com/$USUARIO/$REPO." ;;
+  esac
   echo ""
   if git push -u origin main; then
     echo ""
