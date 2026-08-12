@@ -250,7 +250,14 @@ header{align-items:center;margin-bottom:16px}
 <div><label>Mês</label><select id="fmes" class="sel" onchange="tabela()"></select></div>
 <div><label>Setor</label><select id="fsetor" class="sel" onchange="tabela()"></select></div>
 </div>
-<div class="gin um"><div><label>Buscar</label><input type="text" id="fbusca" placeholder="parte da descrição" oninput="tabela()"></div></div>
+<div class="gin">
+<div><label>Pessoa</label><select id="fpessoa" class="sel" onchange="tabela()"></select></div>
+<div><label>Buscar</label><input type="text" id="fbusca" placeholder="parte da descrição" oninput="tabela()"></div>
+</div>
+<div class="gin" style="margin-top:4px">
+<div><label>Atribuir os filtrados a</label><select id="apessoa" class="sel"></select></div>
+<div style="display:flex;align-items:flex-end"><button class="btn" onclick="atribuirFiltrados()" style="width:100%">Aplicar a todos</button></div>
+</div>
 <div id="lmsg" class="mini" style="font-size:12.5px;margin:8px 0"></div>
 <div class="tw"><table>
 <thead><tr><th style="width:52px">Data</th><th>Descrição</th><th style="width:120px">Setor</th><th class="r" style="width:86px">Valor</th></tr></thead>
@@ -263,6 +270,10 @@ header{align-items:center;margin-bottom:16px}
 <div class="pane">
 <div class="card">
 <h2>Ler faturas e boletos</h2>
+<div class="gin um" style="margin-bottom:12px">
+<div><label>De quem é esta fatura?</label><select id="dono" style="font-size:16px"></select></div>
+</div>
+<div class="note" style="font-size:12.5px;margin-top:0"><b>Escolha antes de selecionar os arquivos.</b> Fatura do cartão de uma pessoa só deve ir para ela — se ficar como <i>Ambos</i>, o gasto é dividido meio a meio e o resumo por pessoa fica errado.</div>
 <label class="arq">
   Escolher PDFs
   <small>faturas do cartão, boletos, contas de telefone e internet</small>
@@ -421,6 +432,11 @@ function selects(d){
   var ms=mesesDisponiveis();
   document.getElementById('fmes').innerHTML='<option value="">todos</option>'+ms.slice().reverse().map(function(x){return '<option value="'+x+'">'+rotMes(x)+'</option>'}).join('');
   document.getElementById('fsetor').innerHTML='<option value="">todos</option>'+st.map(function(x){return '<option>'+x+'</option>'}).join('');
+  document.getElementById('fpessoa').innerHTML='<option value="">todas</option>'+ps.map(function(x){return '<option>'+x+'</option>'}).join('');
+  document.getElementById('apessoa').innerHTML=ps.map(function(x){return '<option>'+x+'</option>'}).join('');
+  var dn=document.getElementById('dono'), atual=dn.value;
+  dn.innerHTML=d.pessoas.map(function(x){return '<option>'+x+'</option>'}).join('')+'<option>Ambos</option>';
+  dn.value=atual||d.pessoas[0];
   document.getElementById('ms').innerHTML=st.map(function(x){return '<option>'+x+'</option>'}).join('');
   document.getElementById('mp').innerHTML=ps.map(function(x){return '<option>'+x+'</option>'}).join('');
   document.getElementById('r_setor').innerHTML=NOMES.filter(function(x){return x!=='A classificar'}).map(function(x){return '<option>'+x+'</option>'}).join('');
@@ -515,19 +531,29 @@ function pessoas(R,d){
 }
 
 /* ================= LANÇAMENTOS ================= */
-function tabela(){
+/* Um lugar só decide o que está filtrado. A tabela e a atribuição em lote
+   usam a mesma lista — senão "aplicar a todos" agiria sobre algo diferente
+   do que você está vendo na tela. */
+function lancamentosFiltrados(){
   var d=carregarDados();
   var fm=document.getElementById('fmes').value, fs=document.getElementById('fsetor').value;
   var fb=(document.getElementById('fbusca').value||'').toLowerCase();
-  var ls=d.lancamentos.filter(function(l){
+  var fp=document.getElementById('fpessoa').value;
+  return d.lancamentos.filter(function(l){
     if(fm&&(l.data||'').slice(0,7)!==fm) return false;
     if(fs&&l.setor!==fs) return false;
+    if(fp&&(l.pessoa||'Ambos')!==fp) return false;
     if(fb&&(l.desc||'').toLowerCase().indexOf(fb)<0) return false;
     return true;
   }).sort(function(a,b){return a.data<b.data?1:-1});
+}
+function tabela(){
+  var d=carregarDados();
+  var ls=lancamentosFiltrados();
   var tot=ls.reduce(function(s,l){return s+(+l.valor||0)},0);
   document.getElementById('lmsg').innerHTML='<b>'+ls.length+'</b> lançamento(s) · <b>'+m(tot)+'</b>';
   var st=NOMES.concat(['Não é despesa']);
+  var ps=['Ambos'].concat(d.pessoas);
   document.getElementById('tlanc').innerHTML = ls.length? ls.slice(0,400).map(function(l){
     var p=(l.data||'').split('-');
     var sel='<select class="sel" onchange="mudarSetor(\''+l.id+'\',this.value)">'+
@@ -535,7 +561,11 @@ function tabela(){
     var tags=(l.setor==='A classificar'?' <span class="pill a" style="background:var(--wBg);color:#8a6400;font-size:10px;padding:1px 6px;border-radius:99px">?</span>':'')+
              (l.conferir?' <span style="background:var(--rBg);color:#922b21;font-size:10px;padding:1px 6px;border-radius:99px">!</span>':'');
     return '<tr><td>'+(p.length>2?p[2]+'/'+p[1]:'—')+'</td>'+
-      '<td>'+esc(l.desc)+tags+'<div style="font-size:11px;color:var(--txt3)">'+esc(l.pessoa||'Ambos')+' · <span onclick="apagar(\''+l.id+'\')" style="color:var(--verm);cursor:pointer">apagar</span></div></td>'+
+      '<td>'+esc(l.desc)+tags+
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:3px">'+
+        '<select class="sel" style="width:auto;flex:1;max-width:120px" onchange="mudarPessoa(\''+l.id+'\',this.value)">'+
+        ps.map(function(x){return '<option'+(x===(l.pessoa||'Ambos')?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'+
+        '<span onclick="apagar(\''+l.id+'\')" style="color:var(--verm);cursor:pointer;font-size:11px">apagar</span></div></td>'+
       '<td>'+sel+'</td><td class="r"><b>'+m2(l.valor)+'</b></td></tr>';
   }).join('') : '<tr><td colspan="4" style="color:var(--txt3)">Nada com esses filtros.</td></tr>';
 }
@@ -550,6 +580,21 @@ function mudarSetor(id,setor){
     alvo.setor=setor; alvo.confianca='alta'; salvarDados();
   }
   render();
+}
+function mudarPessoa(id,pessoa){
+  atribuirPessoa([id],pessoa);
+  render();
+}
+function atribuirFiltrados(){
+  var alvo=document.getElementById('apessoa').value;
+  var ids=lancamentosFiltrados().map(function(l){return l.id});
+  var msg=document.getElementById('lmsg');
+  if(!ids.length){msg.style.color='var(--verm)';msg.textContent='nenhum lançamento nos filtros atuais';return}
+  if(!confirm('Atribuir '+ids.length+' lançamento(s) a "'+alvo+'"?\n\nSó os que estão nos filtros de agora.')) return;
+  var n=atribuirPessoa(ids,alvo);
+  render();
+  msg=document.getElementById('lmsg');
+  msg.style.color='var(--verde)'; msg.textContent=n+' lançamento(s) atribuído(s) a '+alvo;
 }
 function apagar(id){
   if(!confirm('Apagar este lançamento?')) return;
@@ -610,10 +655,12 @@ function aplicarLote(){
 }
 
 /* ================= IMPORTAR ================= */
+var DONO_USADO='Ambos';
 document.getElementById('arqs').addEventListener('change',function(ev){
   var arquivos=Array.prototype.slice.call(ev.target.files||[]);
   if(!arquivos.length) return;
   var d=carregarDados();
+  var dono=document.getElementById('dono').value||'Ambos';
   var prog=document.getElementById('prog'), pi=document.getElementById('progi'), pm=document.getElementById('progmsg');
   prog.style.display=''; document.getElementById('iout').innerHTML='';
   var relatorio=[], totNovos=0, i=0;
@@ -621,6 +668,7 @@ document.getElementById('arqs').addEventListener('change',function(ev){
   function proximo(){
     if(i>=arquivos.length){
       prog.style.display='none';
+      DONO_USADO=dono;
       mostrarRelatorio(relatorio,totNovos,arquivos.length);
       ev.target.value='';
       render();
@@ -630,7 +678,7 @@ document.getElementById('arqs').addEventListener('change',function(ev){
     pi.style.width=Math.round(i/arquivos.length*100)+'%';
     pm.textContent='lendo '+(i+1)+' de '+arquivos.length+': '+a.name;
     lerArquivo(a,d.senhas_pdf).then(function(r){
-      var res=adicionarLancamentos(r.lanc);
+      var res=adicionarLancamentos(r.lanc,dono);
       r.info.novos=res.novos; r.info.repetidos=res.repetidos;
       totNovos+=res.novos;
       relatorio.push(r.info);

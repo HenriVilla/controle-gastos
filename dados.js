@@ -54,7 +54,10 @@ function idDe(l){
   return h.toString(36) + '-' + s.length.toString(36);
 }
 
-function adicionarLancamentos(novos){
+/* dono: a quem pertence a fatura que originou estes lançamentos.
+   Sem isso tudo entrava como "Ambos" e era dividido meio a meio — o que está
+   errado quando a fatura é do cartão de uma pessoa só. */
+function adicionarLancamentos(novos, dono){
   var d = carregarDados();
   var existentes = {};
   d.lancamentos.forEach(function(l){ existentes[l.id] = 1; });
@@ -67,7 +70,7 @@ function adicionarLancamentos(novos){
       var c = classificar(l.desc, d.regras);
       l.setor = c.setor; l.confianca = c.confianca;
     }
-    if (!l.pessoa) l.pessoa = 'Ambos';
+    if (!l.pessoa) l.pessoa = dono || 'Ambos';
     if (l.fixo === undefined) l.fixo = false;
     d.lancamentos.push(l);
     entraram++;
@@ -212,6 +215,18 @@ function importarBackup(texto){
   });
   salvarDados();
   return D.lancamentos.length;
+}
+
+/* Atribui uma pessoa a vários lançamentos de uma vez.
+   Serve para corrigir em bloco o que já entrou dividido. */
+function atribuirPessoa(ids, pessoa){
+  var d = carregarDados(), n = 0, alvo = {};
+  ids.forEach(function(i){ alvo[i] = 1; });
+  d.lancamentos.forEach(function(l){
+    if (alvo[l.id] && l.pessoa !== pessoa){ l.pessoa = pessoa; n++; }
+  });
+  salvarDados();
+  return n;
 }
 
 /* Renomear preserva os valores: a chave de salário acompanha o nome,
