@@ -148,18 +148,26 @@ td,th{padding:7px 8px}
   .cards>.c{min-width:130px}
   .tw{margin:10px 0;padding:0}
 }
+/* iPhone com ilha/entalhe: com viewport-fit=cover a pagina ocupa a tela toda,
+   inclusive por baixo do relogio e da bateria. Estas tres regras devolvem o
+   espaco: uma faixa fixa cobrindo a barra, o conteudo empurrado para baixo,
+   e as abas grudando ABAIXO dela em vez de no topo absoluto. */
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;
+  height:env(safe-area-inset-top);background:var(--bg);z-index:20
+}
+.w{padding-top:calc(14px + env(safe-area-inset-top))}
+.tabs{top:env(safe-area-inset-top)}
 @supports (padding:env(safe-area-inset-bottom)){
   .w{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 }
+header{align-items:center;margin-bottom:16px}
 </style>
 </head>
 <body>
 <div class="w">
 <header>
-<div>
 <h1>Controle de gastos</h1>
-<div class="sb" id="sub">— <span id="ver" style="display:inline-block;margin-left:8px;padding:1px 8px;border-radius:99px;background:#eef4fb;color:#1f3864;font-size:11px;font-weight:700">iPhone v1</span></div>
-</div>
 <button class="tema" id="btema" onclick="tema()">◐</button>
 </header>
 
@@ -420,7 +428,6 @@ function selects(d){
   document.getElementById('c_nome1').value=d.pessoas[1];
   document.getElementById('lsal0').textContent='Salário — '+d.pessoas[0];
   document.getElementById('lsal1').textContent='Salário — '+d.pessoas[1];
-  document.getElementById('sub').textContent=d.pessoas.join(' e ');
   document.getElementById('c_sal0').value=d.salarios[d.pessoas[0]]||'';
   document.getElementById('c_sal1').value=d.salarios[d.pessoas[1]]||'';
   document.getElementById('c_meta').value=d.meta_investimento||'';
