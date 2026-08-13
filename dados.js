@@ -31,8 +31,20 @@ function carregarDados(){
   Object.keys(PADRAO).forEach(function(k){
     if (D[k] === undefined) D[k] = JSON.parse(JSON.stringify(PADRAO[k]));
   });
-  migrar(D);
+  // antes de mexer na estrutura, guarda o estado como veio — se a migração
+  // tiver defeito, o original ainda está aqui
+  if (migrar(D)){
+    try { localStorage.setItem(CHAVE + '_antes_migracao', s || ''); } catch (e){}
+    salvarDados();
+  }
   return D;
+}
+
+/* Quantos dias desde o último backup exportado. null = nunca exportou. */
+function diasDesdeBackup(){
+  var d = carregarDados();
+  if (!d.ultimo_backup) return null;
+  return Math.floor((Date.now() - new Date(d.ultimo_backup).getTime()) / 86400000);
 }
 
 /* Setores que deixaram de existir e para onde vai o que estava neles.
@@ -207,6 +219,8 @@ function criarRegras(regras){
 
 function exportarBackup(){
   var d = carregarDados();
+  d.ultimo_backup = new Date().toISOString();
+  salvarDados();
   var texto = JSON.stringify(d, null, 1);
   var nome = 'controle-gastos-' + new Date().toISOString().slice(0, 10) + '.json';
   var blob = new Blob([texto], { type: 'application/json' });

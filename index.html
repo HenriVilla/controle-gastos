@@ -328,7 +328,8 @@ header{align-items:center;margin-bottom:16px}
 <div class="card">
 <h2>Backup</h2>
 <div class="note warn"><b>O iOS pode limpar o armazenamento de apps pouco usados.</b> Exporte de vez em quando e guarde o arquivo no Arquivos ou no iCloud. É a única garantia de verdade — não é um extra.</div>
-<button class="btn p" onclick="exportarBackup()" style="width:100%;margin-bottom:8px">Exportar backup</button>
+<button class="btn p" onclick="exportarBackup();render()" style="width:100%;margin-bottom:8px">Exportar backup</button>
+<div id="bkinfo" class="mini" style="font-size:12.5px;margin-bottom:8px"></div>
 <label class="arq" style="padding:14px">Importar backup<input type="file" id="arqbk" accept="application/json,.json"></label>
 <div id="bkmsg" class="mini" style="font-size:12.5px;margin-top:8px"></div>
 </div>
@@ -409,6 +410,13 @@ function mesPadrao(){
   for(var i=s.length-1;i>=0;i--) if(s[i].total>=med*0.35) return s[i].mes;
   return s[s.length-1].mes;
 }
+function irConfigurar(){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.tab')[4].classList.add('on');
+  document.querySelectorAll('.pane')[4].classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 function irPara(mes){document.getElementById('mes').value=mes;render();window.scrollTo({top:0,behavior:'smooth'})}
 
 /* ================= RENDER ================= */
@@ -424,6 +432,9 @@ function render(){
   selects(d);
   var R=resumoDoMes(mesAtivo());
   kpis(R); pizza(R); pessoas(R,d); tabela(); lote(); regras(d); senhas(d); evolucao(d);
+  var bi=document.getElementById('bkinfo'), dd=diasDesdeBackup();
+  if(bi) bi.innerHTML = dd===null ? 'Nenhum backup exportado ainda.'
+       : 'Último backup: <b>'+(dd===0?'hoje':'há '+dd+' dia'+(dd>1?'s':''))+'</b>.';
 }
 
 function selects(d){
@@ -461,6 +472,15 @@ function kpis(R){
       '. É normal: a fatura data cada compra pelo dia da compra, então o mês corrente só enche quando a próxima fatura fechar.'+
       (cheio!==R.mes?' <a href="#" onclick="irPara(\''+cheio+'\');return false">Ver '+rotMes(cheio)+'</a>':'')+'</div>';
   } else av.innerHTML='';
+
+  // backup velho é o único risco real de perder os lançamentos
+  var dias=diasDesdeBackup();
+  if (dias===null || dias>30){
+    av.innerHTML += '<div class="note warn" style="font-size:12.5px"><b>'+
+      (dias===null ? 'Você nunca exportou um backup.' : 'Seu último backup foi há '+dias+' dias.')+
+      '</b> Atualizar o app não apaga nada, mas o iOS pode limpar o armazenamento de apps pouco usados. '+
+      '<a href="#" onclick="irConfigurar();return false">Exportar agora</a> — leva 5 segundos.</div>';
+  }
 
   var cs=R.sobra>=0?'var(--verde)':'var(--verm)';
   document.getElementById('kpi').innerHTML=
