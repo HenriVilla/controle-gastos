@@ -31,7 +31,26 @@ function carregarDados(){
   Object.keys(PADRAO).forEach(function(k){
     if (D[k] === undefined) D[k] = JSON.parse(JSON.stringify(PADRAO[k]));
   });
+  migrar(D);
   return D;
+}
+
+/* Setores que deixaram de existir e para onde vai o que estava neles.
+   Sem isto, lançamentos e regras apontariam para um setor que sumiu: eles
+   somem da pizza sem aviso e a soma para de fechar. */
+var RENOMEADOS = { 'Moradia': 'Outros' };
+
+function migrar(d){
+  var mudou = false;
+  (d.lancamentos || []).forEach(function(l){
+    var novo = RENOMEADOS[l.setor];
+    if (novo){ l.setor = novo; mudou = true; }
+  });
+  (d.regras || []).forEach(function(r){
+    var novo = RENOMEADOS[r.setor];
+    if (novo){ r.setor = novo; mudou = true; }
+  });
+  return mudou;
 }
 
 function salvarDados(){
@@ -213,6 +232,7 @@ function importarBackup(texto){
   Object.keys(PADRAO).forEach(function(k){
     if (D[k] === undefined) D[k] = JSON.parse(JSON.stringify(PADRAO[k]));
   });
+  migrar(D);                       // backup antigo pode trazer setores que sumiram
   salvarDados();
   return D.lancamentos.length;
 }
