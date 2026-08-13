@@ -40,6 +40,10 @@ function carregarDados(){
    somem da pizza sem aviso e a soma para de fechar. */
 var RENOMEADOS = { 'Moradia': 'Outros' };
 
+/* Regras antigas que apontam para um setor que na época era o único possível.
+   Redemaga era Transporte porque Gasolina ainda não existia como setor. */
+var CORRIGIR_REGRA = { 'redemaga': 'Gasolina', 'rede maga': 'Gasolina' };
+
 function migrar(d){
   var mudou = false;
   (d.lancamentos || []).forEach(function(l){
@@ -49,6 +53,8 @@ function migrar(d){
   (d.regras || []).forEach(function(r){
     var novo = RENOMEADOS[r.setor];
     if (novo){ r.setor = novo; mudou = true; }
+    var certo = CORRIGIR_REGRA[nrm(r.chave || '')];
+    if (certo && r.setor !== certo){ r.setor = certo; mudou = true; }
   });
   return mudou;
 }

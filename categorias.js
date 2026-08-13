@@ -48,7 +48,10 @@ var SETORES = [
    "parrilla",
    "glazed",
    "padaria",
-   "cafeteria"
+   "cafeteria",
+   "sbbangiare",
+   "casa do colono",
+   "nutty bavarian"
   ]
  },
  {
@@ -210,7 +213,9 @@ var SETORES = [
    "ale comb",
    "ale sat",
    "rede sol",
-   "abastecimento"
+   "abastecimento",
+   "redemaga",
+   "rede maga"
   ]
  },
  {
@@ -252,23 +257,18 @@ var SETORES = [
   "cor": "#ef6c00",
   "chaves": [
    "cinema",
-   "cinemark",
+   "cine marquise",
    "uci ",
    "teatro",
-   "show",
-   "ingresso",
-   "eventim",
-   "sympla",
    "parque",
    "clube",
    "steam",
    "playstation",
+   "playstatn",
    "xbox",
    "nintendo",
    "game",
    "loteria",
-   "ticketmaster",
-   "playstatn",
    "boliche",
    "kart"
   ]
@@ -337,7 +337,10 @@ var SETORES = [
    "coopera",
    "bretas",
    "mart minas",
-   "villefort"
+   "villefort",
+   "vn auto servico",
+   "vn auto serv",
+   "san michel"
   ]
  },
  {
@@ -499,6 +502,22 @@ var SETORES = [
    "encargo",
    "manutencao de conta",
    "pacote de servicos"
+  ]
+ },
+ {
+  "setor": "Show",
+  "cor": "#ffb300",
+  "chaves": [
+   "eventim",
+   "ingresso",
+   "ticketmaster",
+   "sympla",
+   "eventbrite",
+   "casa de show",
+   "festival",
+   "turne",
+   "camarote",
+   "open bar"
   ]
  },
  {
