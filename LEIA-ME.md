@@ -40,7 +40,7 @@ Com o Mac ligado e na mesma rede, sirva a pasta e abra pelo IP do Mac. Serve par
 2. No app, aba **Importar** → **Escolher PDFs** (pode mandar vários de uma vez)
 3. Na aba **Lançamentos**, classifique o que ficou sem setor
 
-Reimportar o mesmo PDF não duplica nada: a identidade é **data + descrição + valor**.
+**Reimportar não duplica — e não perde.** O controle compara *quantidade*, não presença: conta quantas cópias de cada lançamento o arquivo traz e quantas a base já tem, e insere só a diferença. Assim a mesma fatura pode ser lida quantas vezes for, e três compras legítimas iguais no mesmo dia entram as três.
 
 ---
 

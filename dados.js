@@ -82,13 +82,19 @@ function salvarDados(){
   }
 }
 
-/* identidade de um lançamento: data + descrição + valor.
-   É o que impede a mesma fatura de entrar duas vezes. */
-function idDe(l){
+/* Assinatura: data + descrição + valor.
+   Duas compras iguais no mesmo dia têm a MESMA assinatura — o que as
+   distingue é o número de repetições, não a assinatura. */
+function assinatura(l){
   var s = l.data + '|' + nrm(l.desc) + '|' + (+l.valor || 0).toFixed(2);
   var h = 5381;
   for (var i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
   return h.toString(36) + '-' + s.length.toString(36);
+}
+
+/* Identidade única: assinatura + qual repetição ela é. */
+function idDe(l, ocorrencia){
+  return assinatura(l) + '#' + (ocorrencia || 0);
 }
 
 /* dono: a quem pertence a fatura que originou estes lançamentos.
@@ -96,13 +102,25 @@ function idDe(l){
    errado quando a fatura é do cartão de uma pessoa só. */
 function adicionarLancamentos(novos, dono){
   var d = carregarDados();
-  var existentes = {};
-  d.lancamentos.forEach(function(l){ existentes[l.id] = 1; });
-  var entraram = 0, repetidos = 0;
+
+  // Quantas vezes cada assinatura já existe na base. Comparar CONTAGEM, e não
+  // presença, é o que separa os dois casos:
+  //   reimportar a mesma fatura -> o arquivo traz o mesmo tanto, nada entra
+  //   três cafés iguais num dia -> o arquivo traz três, os três entram
+  var ja = {};
+  d.lancamentos.forEach(function(l){
+    var sig = l.sig || String(l.id).split('#')[0];
+    ja[sig] = (ja[sig] || 0) + 1;
+  });
+
+  var vistos = {}, entraram = 0, repetidos = 0;
   novos.forEach(function(l){
-    l.id = idDe(l);
-    if (existentes[l.id]){ repetidos++; return; }
-    existentes[l.id] = 1;
+    var sig = assinatura(l);
+    vistos[sig] = (vistos[sig] || 0) + 1;
+    if (vistos[sig] <= (ja[sig] || 0)){ repetidos++; return; }
+    l.sig = sig;
+    l.id = idDe(l, vistos[sig] - 1);
+    ja[sig] = (ja[sig] || 0) + 1;
     if (!l.setor){
       var c = classificar(l.desc, d.regras);
       l.setor = c.setor; l.confianca = c.confianca;
